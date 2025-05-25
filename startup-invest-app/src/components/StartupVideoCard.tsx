@@ -34,6 +34,7 @@ interface StartupVideoCardProps {
   startup: Startup;
   autoPlay?: boolean;
   onInvest?: (pitchId: string) => void;
+  fullScreen?: boolean;
 }
 
 const StartupVideoCard: React.FC<StartupVideoCardProps> = ({
@@ -41,6 +42,7 @@ const StartupVideoCard: React.FC<StartupVideoCardProps> = ({
   startup,
   autoPlay = false,
   onInvest,
+  fullScreen = false,
 }) => {
   const [isPlaying, setIsPlaying] = useState(autoPlay);
   const [isLiked, setIsLiked] = useState(false);
@@ -95,6 +97,346 @@ const StartupVideoCard: React.FC<StartupVideoCardProps> = ({
     navigate(`/startup/${startup.id}`);
   };
 
+  if (fullScreen) {
+    return (
+      <Box
+        sx={{
+          width: '100%',
+          height: '100%',
+          position: 'relative',
+          backgroundColor: '#000000',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+        onMouseEnter={() => setShowControls(true)}
+        onMouseLeave={() => setShowControls(false)}
+        onClick={handlePlayPause}
+      >
+        {/* Full Screen Video */}
+        <ReactPlayer
+          ref={playerRef}
+          url={pitch.videoUrl}
+          playing={isPlaying}
+          muted={isMuted}
+          width="100%"
+          height="100%"
+          style={{ position: 'absolute', top: 0, left: 0 }}
+        />
+
+        {/* Full Screen Overlay */}
+        <Fade in={showControls || !isPlaying}>
+          <Box
+            sx={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, transparent 20%, transparent 80%, rgba(0,0,0,0.6) 100%)',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              p: 3,
+            }}
+          >
+            {/* Top Controls */}
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <Box sx={{ display: 'flex', gap: 1 }}>
+                <Chip
+                  label={startup.category}
+                  size="small"
+                  sx={{
+                    backgroundColor: 'rgba(255,255,255,0.2)',
+                    color: 'white',
+                    fontSize: '0.75rem',
+                    backdropFilter: 'blur(10px)',
+                  }}
+                />
+                <Chip
+                  label={`${Math.floor(pitch.duration)}s`}
+                  size="small"
+                  sx={{
+                    backgroundColor: 'rgba(0,0,0,0.6)',
+                    color: 'white',
+                    fontSize: '0.75rem',
+                  }}
+                />
+              </Box>
+              <IconButton
+                size="small"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsMuted(!isMuted);
+                }}
+                sx={{ 
+                  color: 'white',
+                  backgroundColor: 'rgba(0,0,0,0.5)',
+                  '&:hover': { backgroundColor: 'rgba(0,0,0,0.7)' }
+                }}
+              >
+                {isMuted ? <VolumeOff /> : <VolumeUp />}
+              </IconButton>
+            </Box>
+
+            {/* Center Play Button */}
+            {!isPlaying && (
+              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <IconButton
+                  sx={{
+                    backgroundColor: 'rgba(255,255,255,0.9)',
+                    color: '#000000',
+                    '&:hover': {
+                      backgroundColor: 'rgba(255,255,255,1)',
+                    },
+                    width: 80,
+                    height: 80,
+                  }}
+                >
+                  <PlayArrow sx={{ fontSize: 40 }} />
+                </IconButton>
+              </Box>
+            )}
+
+            {/* Bottom Content */}
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+              {/* Left Side - Startup Info */}
+              <Box sx={{ flex: 1, mr: 3 }}>
+                {/* Startup Profile */}
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    mb: 2,
+                    cursor: 'pointer',
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleProfileClick();
+                  }}
+                >
+                  <Avatar
+                    src={startup.avatar}
+                    sx={{ width: 48, height: 48, mr: 2, border: '2px solid white' }}
+                  />
+                  <Box>
+                    <Typography
+                      variant="h6"
+                      sx={{ color: 'white', fontWeight: 700, lineHeight: 1.2 }}
+                    >
+                      {startup.name}
+                      {startup.verified && (
+                        <Verified sx={{ ml: 1, fontSize: 20, color: '#1DA1F2' }} />
+                      )}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{ color: 'rgba(255,255,255,0.8)' }}
+                    >
+                      {startup.companyName}
+                    </Typography>
+                  </Box>
+                </Box>
+
+                {/* Pitch Title */}
+                <Typography
+                  variant="h5"
+                  sx={{
+                    color: 'white',
+                    fontWeight: 600,
+                    mb: 2,
+                    lineHeight: 1.3,
+                  }}
+                >
+                  {pitch.title}
+                </Typography>
+
+                {/* Tags */}
+                <Box sx={{ display: 'flex', gap: 1, mb: 2, flexWrap: 'wrap' }}>
+                  {pitch.tags.slice(0, 4).map((tag) => (
+                    <Chip
+                      key={tag}
+                      label={`#${tag}`}
+                      size="small"
+                      sx={{
+                        backgroundColor: 'rgba(255,255,255,0.2)',
+                        color: 'white',
+                        fontSize: '0.8rem',
+                        backdropFilter: 'blur(10px)',
+                      }}
+                    />
+                  ))}
+                </Box>
+
+                {/* Investment Info */}
+                <Box
+                  sx={{
+                    backgroundColor: 'rgba(0,0,0,0.6)',
+                    borderRadius: 2,
+                    p: 2,
+                    backdropFilter: 'blur(10px)',
+                    maxWidth: 300,
+                  }}
+                >
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+                    <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
+                      Собрано
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: 'white', fontWeight: 600 }}>
+                      {fundingPercentage.toFixed(1)}%
+                    </Typography>
+                  </Box>
+                  <LinearProgress
+                    variant="determinate"
+                    value={Math.min(fundingPercentage, 100)}
+                    sx={{
+                      height: 6,
+                      borderRadius: 3,
+                      backgroundColor: 'rgba(255,255,255,0.2)',
+                      '& .MuiLinearProgress-bar': {
+                        borderRadius: 3,
+                        backgroundColor: '#ffffff',
+                      },
+                    }}
+                  />
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 1 }}>
+                    <Typography variant="body2" sx={{ color: 'white', fontWeight: 600 }}>
+                      {formatCurrency(pitch.currentFunding)}
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
+                      из {formatCurrency(pitch.fundingGoal)}
+                    </Typography>
+                  </Box>
+                </Box>
+              </Box>
+
+              {/* Right Side - Actions */}
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 3,
+                  alignItems: 'center',
+                }}
+              >
+                {/* Like */}
+                <Box sx={{ textAlign: 'center' }}>
+                  <IconButton
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleLike();
+                    }}
+                    sx={{
+                      backgroundColor: 'rgba(0,0,0,0.6)',
+                      color: isLiked ? '#ff4757' : 'white',
+                      width: 56,
+                      height: 56,
+                      '&:hover': {
+                        backgroundColor: 'rgba(0,0,0,0.8)',
+                      },
+                    }}
+                  >
+                    {isLiked ? <Favorite sx={{ fontSize: 28 }} /> : <FavoriteBorder sx={{ fontSize: 28 }} />}
+                  </IconButton>
+                  <Typography variant="body2" sx={{ color: 'white', mt: 1, fontWeight: 600 }}>
+                    {formatNumber(pitch.likes + (isLiked ? 1 : 0))}
+                  </Typography>
+                </Box>
+
+                {/* Comments */}
+                <Box sx={{ textAlign: 'center' }}>
+                  <IconButton
+                    sx={{
+                      backgroundColor: 'rgba(0,0,0,0.6)',
+                      color: 'white',
+                      width: 56,
+                      height: 56,
+                      '&:hover': {
+                        backgroundColor: 'rgba(0,0,0,0.8)',
+                      },
+                    }}
+                  >
+                    <Comment sx={{ fontSize: 28 }} />
+                  </IconButton>
+                  <Typography variant="body2" sx={{ color: 'white', mt: 1, fontWeight: 600 }}>
+                    {formatNumber(pitch.comments.length)}
+                  </Typography>
+                </Box>
+
+                {/* Share */}
+                <Box sx={{ textAlign: 'center' }}>
+                  <IconButton
+                    sx={{
+                      backgroundColor: 'rgba(0,0,0,0.6)',
+                      color: 'white',
+                      width: 56,
+                      height: 56,
+                      '&:hover': {
+                        backgroundColor: 'rgba(0,0,0,0.8)',
+                      },
+                    }}
+                  >
+                    <Share sx={{ fontSize: 28 }} />
+                  </IconButton>
+                  <Typography variant="body2" sx={{ color: 'white', mt: 1, fontWeight: 600 }}>
+                    Поделиться
+                  </Typography>
+                </Box>
+
+                {/* Invest Button */}
+                <Button
+                  variant="contained"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleInvest();
+                  }}
+                  sx={{
+                    backgroundColor: '#ffffff',
+                    color: '#000000',
+                    fontWeight: 700,
+                    py: 1.5,
+                    px: 3,
+                    borderRadius: 2,
+                    minWidth: 120,
+                    '&:hover': {
+                      backgroundColor: '#f0f0f0',
+                    },
+                  }}
+                >
+                  Инвестировать
+                </Button>
+
+                {/* More Info Button */}
+                <Button
+                  variant="outlined"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleStartupClick();
+                  }}
+                  sx={{
+                    borderColor: 'white',
+                    color: 'white',
+                    fontWeight: 600,
+                    py: 1,
+                    px: 3,
+                    borderRadius: 2,
+                    minWidth: 120,
+                    '&:hover': {
+                      borderColor: '#f0f0f0',
+                      backgroundColor: 'rgba(255,255,255,0.1)',
+                    },
+                  }}
+                >
+                  Подробнее
+                </Button>
+              </Box>
+            </Box>
+          </Box>
+        </Fade>
+      </Box>
+    );
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -105,11 +447,11 @@ const StartupVideoCard: React.FC<StartupVideoCardProps> = ({
         sx={{
           maxWidth: 400,
           mx: 'auto',
-          borderRadius: 3,
+          borderRadius: 0,
           overflow: 'hidden',
           position: 'relative',
-          backgroundColor: 'background.paper',
-          boxShadow: theme.shadows[4],
+          backgroundColor: '#111111',
+          border: '1px solid #333333',
         }}
         onMouseEnter={() => setShowControls(true)}
         onMouseLeave={() => setShowControls(false)}

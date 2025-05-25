@@ -3,29 +3,31 @@ import {
   AppBar,
   Toolbar,
   Typography,
-  Button,
   IconButton,
   Avatar,
   Menu,
   MenuItem,
-  Badge,
   Box,
-  Container,
+  BottomNavigation,
+  BottomNavigationAction,
+  Paper,
   useTheme,
   useMediaQuery,
 } from '@mui/material';
 import {
   Home,
-  Explore,
-  Notifications,
-  AccountCircle,
-  TrendingUp,
   Search,
+  Add,
+  FavoriteBorder,
+  Person,
+  TrendingUp,
+  AccountCircle,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const Navigation: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [bottomNavValue, setBottomNavValue] = useState(0);
   const navigate = useNavigate();
   const location = useLocation();
   const theme = useTheme();
@@ -39,134 +41,223 @@ const Navigation: React.FC = () => {
     setAnchorEl(null);
   };
 
-  const isActive = (path: string) => location.pathname === path;
+  const getBottomNavValue = () => {
+    switch (location.pathname) {
+      case '/': return 0;
+      case '/explore': return 1;
+      case '/profile': return 3;
+      default: return 0;
+    }
+  };
 
-  const navItems = [
-    { label: 'Лента', path: '/', icon: <Home /> },
-    { label: 'Обзор', path: '/explore', icon: <Explore /> },
-    { label: 'Поиск', path: '/search', icon: <Search /> },
-  ];
+  React.useEffect(() => {
+    setBottomNavValue(getBottomNavValue());
+  }, [location.pathname]);
 
+  // Mobile TikTok-style navigation
+  if (isMobile) {
+    return (
+      <>
+        {/* Top bar for mobile */}
+        <AppBar 
+          position="fixed" 
+          elevation={0}
+          sx={{ 
+            backgroundColor: '#000000',
+            borderBottom: '1px solid #333333',
+            zIndex: 1100,
+          }}
+        >
+          <Toolbar sx={{ justifyContent: 'center', minHeight: '56px !important' }}>
+            <Typography 
+              variant="h6" 
+              sx={{ 
+                fontWeight: 700,
+                color: '#ffffff',
+                fontSize: '18px',
+                letterSpacing: '0.5px'
+              }}
+            >
+              StartupInvest
+            </Typography>
+          </Toolbar>
+        </AppBar>
+
+        {/* Bottom navigation like TikTok */}
+        <Paper 
+          sx={{ 
+            position: 'fixed', 
+            bottom: 0, 
+            left: 0, 
+            right: 0, 
+            zIndex: 1100,
+            backgroundColor: '#000000',
+            borderTop: '1px solid #333333',
+          }} 
+          elevation={0}
+        >
+          <BottomNavigation
+            value={bottomNavValue}
+            onChange={(event, newValue) => {
+              setBottomNavValue(newValue);
+              switch (newValue) {
+                case 0: navigate('/'); break;
+                case 1: navigate('/explore'); break;
+                case 2: 
+                  // Create new pitch - можно добавить позже
+                  break;
+                case 3: navigate('/profile'); break;
+              }
+            }}
+            sx={{
+              backgroundColor: 'transparent',
+              '& .MuiBottomNavigationAction-root': {
+                minWidth: 'auto',
+                padding: '6px 12px',
+              }
+            }}
+          >
+            <BottomNavigationAction 
+              label="Главная" 
+              icon={<Home />} 
+              sx={{ 
+                color: bottomNavValue === 0 ? '#ffffff' : '#666666',
+                '&.Mui-selected': { color: '#ffffff' }
+              }}
+            />
+            <BottomNavigationAction 
+              label="Поиск" 
+              icon={<Search />} 
+              sx={{ 
+                color: bottomNavValue === 1 ? '#ffffff' : '#666666',
+                '&.Mui-selected': { color: '#ffffff' }
+              }}
+            />
+            <BottomNavigationAction 
+              label="Создать" 
+              icon={
+                <Box
+                  sx={{
+                    width: 32,
+                    height: 32,
+                    backgroundColor: '#ffffff',
+                    borderRadius: '8px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Add sx={{ color: '#000000', fontSize: 20 }} />
+                </Box>
+              }
+              sx={{ 
+                color: '#666666',
+              }}
+            />
+            <BottomNavigationAction 
+              label="Профиль" 
+              icon={<Person />} 
+              sx={{ 
+                color: bottomNavValue === 3 ? '#ffffff' : '#666666',
+                '&.Mui-selected': { color: '#ffffff' }
+              }}
+            />
+          </BottomNavigation>
+        </Paper>
+      </>
+    );
+  }
+
+  // Desktop navigation
   return (
     <AppBar 
       position="sticky" 
       elevation={0}
       sx={{ 
-        backgroundColor: 'background.paper',
-        borderBottom: '1px solid',
-        borderColor: 'divider',
-        color: 'text.primary'
+        backgroundColor: '#000000',
+        borderBottom: '1px solid #333333',
       }}
     >
-      <Container maxWidth="lg">
-        <Toolbar sx={{ px: { xs: 0, sm: 2 } }}>
-          {/* Logo */}
-          <Box 
+      <Toolbar sx={{ px: 4 }}>
+        {/* Logo */}
+        <Box 
+          sx={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            cursor: 'pointer',
+            mr: 4 
+          }}
+          onClick={() => navigate('/')}
+        >
+          <TrendingUp sx={{ color: '#ffffff', mr: 1, fontSize: 28 }} />
+          <Typography 
+            variant="h6" 
             sx={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              cursor: 'pointer',
-              mr: 4 
+              fontWeight: 700,
+              color: '#ffffff',
             }}
-            onClick={() => navigate('/')}
           >
-            <TrendingUp sx={{ color: 'primary.main', mr: 1, fontSize: 28 }} />
-            <Typography 
-              variant="h6" 
-              sx={{ 
-                fontWeight: 700,
-                background: 'linear-gradient(45deg, #6366f1, #ec4899)',
-                backgroundClip: 'text',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                display: { xs: 'none', sm: 'block' }
-              }}
-            >
-              StartupInvest
-            </Typography>
-          </Box>
+            StartupInvest
+          </Typography>
+        </Box>
 
-          {/* Navigation Items */}
-          <Box sx={{ display: 'flex', gap: 1, flexGrow: 1 }}>
-            {navItems.map((item) => (
-              <Button
-                key={item.path}
-                startIcon={!isMobile ? item.icon : undefined}
-                onClick={() => navigate(item.path)}
-                sx={{
-                  color: isActive(item.path) ? 'primary.main' : 'text.secondary',
-                  fontWeight: isActive(item.path) ? 600 : 400,
-                  backgroundColor: isActive(item.path) ? 'primary.50' : 'transparent',
+        {/* Center space */}
+        <Box sx={{ flexGrow: 1 }} />
+
+        {/* Right side actions */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <IconButton onClick={() => navigate('/')}>
+            <Home sx={{ color: location.pathname === '/' ? '#ffffff' : '#666666' }} />
+          </IconButton>
+          <IconButton onClick={() => navigate('/explore')}>
+            <Search sx={{ color: location.pathname === '/explore' ? '#ffffff' : '#666666' }} />
+          </IconButton>
+
+          {/* Profile Menu */}
+          <IconButton
+            onClick={handleProfileMenuOpen}
+          >
+            <Avatar 
+              sx={{ width: 32, height: 32, border: '2px solid #333333' }}
+              src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
+            />
+          </IconButton>
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+            onClick={handleMenuClose}
+            PaperProps={{
+              elevation: 0,
+              sx: {
+                mt: 1.5,
+                minWidth: 200,
+                backgroundColor: '#111111',
+                border: '1px solid #333333',
+                '& .MuiMenuItem-root': {
+                  px: 2,
+                  py: 1.5,
+                  color: '#ffffff',
                   '&:hover': {
-                    backgroundColor: 'primary.50',
-                  },
-                  minWidth: isMobile ? 'auto' : undefined,
-                  px: isMobile ? 1 : 2,
-                }}
-              >
-                {isMobile ? item.icon : item.label}
-              </Button>
-            ))}
-          </Box>
-
-          {/* Right side actions */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            {/* Notifications */}
-            <IconButton
-              size="large"
-              sx={{ color: 'text.secondary' }}
-            >
-              <Badge badgeContent={3} color="error">
-                <Notifications />
-              </Badge>
-            </IconButton>
-
-            {/* Profile Menu */}
-            <IconButton
-              size="large"
-              edge="end"
-              onClick={handleProfileMenuOpen}
-              sx={{ ml: 1 }}
-            >
-              <Avatar 
-                sx={{ width: 32, height: 32 }}
-                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
-              />
-            </IconButton>
-            <Menu
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={handleMenuClose}
-              onClick={handleMenuClose}
-              PaperProps={{
-                elevation: 3,
-                sx: {
-                  mt: 1.5,
-                  minWidth: 200,
-                  '& .MuiMenuItem-root': {
-                    px: 2,
-                    py: 1,
+                    backgroundColor: '#222222',
                   },
                 },
-              }}
-            >
-              <MenuItem onClick={() => navigate('/profile/current')}>
-                <AccountCircle sx={{ mr: 2 }} />
-                Мой профиль
-              </MenuItem>
-              <MenuItem onClick={() => navigate('/settings')}>
-                Настройки
-              </MenuItem>
-              <MenuItem onClick={() => navigate('/help')}>
-                Помощь
-              </MenuItem>
-              <MenuItem onClick={() => {}}>
-                Выйти
-              </MenuItem>
-            </Menu>
-          </Box>
-        </Toolbar>
-      </Container>
+              },
+            }}
+          >
+            <MenuItem onClick={() => navigate('/profile')}>
+              <AccountCircle sx={{ mr: 2, color: '#ffffff' }} />
+              Мой профиль
+            </MenuItem>
+            <MenuItem onClick={() => {}}>
+              Настройки
+            </MenuItem>
+            <MenuItem onClick={() => {}}>
+              Выйти
+            </MenuItem>
+          </Menu>
+        </Box>
+      </Toolbar>
     </AppBar>
   );
 };

@@ -38,11 +38,19 @@ const ExplorePage: React.FC = () => {
   const industries = ['Технологии', 'Финтех', 'Здравоохранение', 'E-commerce', 'Образование'];
   const stages = ['Идея', 'MVP', 'Рост', 'Масштабирование'];
 
+  // Маппинг русских названий стадий к английским значениям в данных
+  const stageMapping: { [key: string]: string } = {
+    'Идея': 'idea',
+    'MVP': 'mvp',
+    'Рост': 'early',
+    'Масштабирование': 'scale'
+  };
+
   const filteredStartups = mockStartups.filter(startup => {
     const matchesSearch = startup.companyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          startup.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesIndustry = !selectedIndustry || startup.industry === selectedIndustry;
-    const matchesStage = !selectedStage || startup.stage === selectedStage;
+    const matchesStage = !selectedStage || startup.stage === stageMapping[selectedStage];
     const matchesFunding = startup.fundingGoal >= fundingRange[0] && startup.fundingGoal <= fundingRange[1];
     
     return matchesSearch && matchesIndustry && matchesStage && matchesFunding;

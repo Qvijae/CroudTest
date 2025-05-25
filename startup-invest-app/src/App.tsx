@@ -13,53 +13,130 @@ import InvestPage from './pages/SimpleInvestPage';
 
 const theme = createTheme({
   palette: {
-    mode: 'light',
+    mode: 'dark',
     primary: {
-      main: '#6366f1',
-      light: '#818cf8',
-      dark: '#4f46e5',
+      main: '#ffffff',
+      light: '#f5f5f5',
+      dark: '#e0e0e0',
     },
     secondary: {
-      main: '#ec4899',
-      light: '#f472b6',
-      dark: '#db2777',
+      main: '#666666',
+      light: '#888888',
+      dark: '#444444',
     },
     background: {
-      default: '#f8fafc',
-      paper: '#ffffff',
+      default: '#000000',
+      paper: '#111111',
     },
+    text: {
+      primary: '#ffffff',
+      secondary: '#cccccc',
+    },
+    divider: '#333333',
   },
   typography: {
-    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+    fontFamily: '"SF Pro Display", "Roboto", "Helvetica", "Arial", sans-serif',
     h4: {
-      fontWeight: 600,
+      fontWeight: 700,
+      color: '#ffffff',
     },
     h5: {
       fontWeight: 600,
+      color: '#ffffff',
     },
     h6: {
       fontWeight: 600,
+      color: '#ffffff',
+    },
+    body1: {
+      color: '#ffffff',
+    },
+    body2: {
+      color: '#cccccc',
     },
   },
   shape: {
-    borderRadius: 12,
+    borderRadius: 0,
   },
   components: {
     MuiButton: {
       styleOverrides: {
         root: {
           textTransform: 'none',
-          borderRadius: 8,
-          fontWeight: 500,
+          borderRadius: 0,
+          fontWeight: 600,
+          border: '1px solid #333333',
+          '&:hover': {
+            backgroundColor: '#222222',
+            borderColor: '#555555',
+          },
+        },
+        contained: {
+          backgroundColor: '#ffffff',
+          color: '#000000',
+          '&:hover': {
+            backgroundColor: '#f0f0f0',
+          },
+        },
+        outlined: {
+          borderColor: '#666666',
+          color: '#ffffff',
+          '&:hover': {
+            borderColor: '#888888',
+            backgroundColor: '#111111',
+          },
         },
       },
     },
     MuiCard: {
       styleOverrides: {
         root: {
-          boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+          backgroundColor: '#111111',
+          border: '1px solid #333333',
+          borderRadius: 0,
+          boxShadow: 'none',
           '&:hover': {
-            boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+            borderColor: '#555555',
+          },
+        },
+      },
+    },
+    MuiAppBar: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#000000',
+          borderBottom: '1px solid #333333',
+          boxShadow: 'none',
+        },
+      },
+    },
+    MuiBottomNavigation: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#000000',
+          borderTop: '1px solid #333333',
+          height: '60px',
+        },
+      },
+    },
+    MuiBottomNavigationAction: {
+      styleOverrides: {
+        root: {
+          color: '#666666',
+          '&.Mui-selected': {
+            color: '#ffffff',
+          },
+          minWidth: 'auto',
+          padding: '6px 12px',
+        },
+      },
+    },
+    MuiIconButton: {
+      styleOverrides: {
+        root: {
+          color: '#ffffff',
+          '&:hover': {
+            backgroundColor: '#222222',
           },
         },
       },
@@ -72,9 +149,9 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
-        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: '#000000' }}>
           <Navigation />
-          <Box component="main" sx={{ flexGrow: 1, pt: 2 }}>
+          <Box component="main" sx={{ flexGrow: 1 }}>
             <Routes>
               <Route path="/" element={<FeedPage />} />
               <Route path="/explore" element={<ExplorePage />} />

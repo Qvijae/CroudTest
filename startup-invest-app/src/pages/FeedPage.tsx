@@ -1,68 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
-  Container,
-  Stack,
   Box,
+  IconButton,
   Typography,
-  Tabs,
-  Tab,
-  Card,
-  CardContent,
-  Avatar,
-  Chip,
-  Button,
   useTheme,
   useMediaQuery,
+  Fade,
 } from '@mui/material';
 import {
-  TrendingUp,
-  Star,
-  AccessTime,
-  LocalFireDepartment,
+  KeyboardArrowUp,
+  KeyboardArrowDown,
 } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import StartupVideoCard from '../components/StartupVideoCard';
-import { mockPitches, mockStartups, mockOpportunities } from '../data/mockData';
-import { StartupPitch, Startup, InvestmentOpportunity } from '../types';
-
-interface TabPanelProps {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
-}
-
-function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`feed-tabpanel-${index}`}
-      aria-labelledby={`feed-tab-${index}`}
-      {...other}
-    >
-      {value === index && <Box>{children}</Box>}
-    </div>
-  );
-}
+import { mockPitches, mockStartups } from '../data/mockData';
+import { StartupPitch, Startup } from '../types';
 
 const FeedPage: React.FC = () => {
-  const [tabValue, setTabValue] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [pitches, setPitches] = useState<StartupPitch[]>([]);
-  const [opportunities, setOpportunities] = useState<InvestmentOpportunity[]>([]);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Simulate loading data
     setPitches(mockPitches);
-    setOpportunities(mockOpportunities);
   }, []);
-
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
-    setTabValue(newValue);
-  };
 
   const getStartupForPitch = (pitchId: string): Startup | undefined => {
     const pitch = pitches.find(p => p.id === pitchId);
@@ -71,171 +34,220 @@ const FeedPage: React.FC = () => {
 
   const handleInvest = (pitchId: string) => {
     console.log('Investing in pitch:', pitchId);
-    // Here you would navigate to investment page or open investment modal
   };
 
-  const trendingPitches = pitches.filter((_, index) => index < 3);
-  const recentPitches = pitches.slice().sort((a, b) => 
-    new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-  );
+  const scrollToNext = () => {
+    if (currentIndex < pitches.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+    }
+  };
+
+  const scrollToPrev = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
+    }
+  };
+
+  // Handle wheel/touch events for scrolling
+  useEffect(() => {
+    const handleWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      if (e.deltaY > 0) {
+        scrollToNext();
+      } else {
+        scrollToPrev();
+      }
+    };
+
+    const container = containerRef.current;
+    if (container) {
+      container.addEventListener('wheel', handleWheel, { passive: false });
+      return () => container.removeEventListener('wheel', handleWheel);
+    }
+  }, [currentIndex, pitches.length]);
+
+  // Handle keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        scrollToNext();
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        scrollToPrev();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [currentIndex, pitches.length]);
+
+  if (pitches.length === 0) {
+    return (
+      <Box 
+        sx={{ 
+          height: '100vh', 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center',
+          backgroundColor: '#000000'
+        }}
+      >
+        <Typography variant="h6" color="white">
+          Загрузка...
+        </Typography>
+      </Box>
+    );
+  }
 
   return (
-    <Container maxWidth="lg" sx={{ py: 2 }}>
-      <Box sx={{ mb: 3 }}>
-        <Typography variant="h4" fontWeight={700} gutterBottom>
-          Лента стартапов
-        </Typography>
-        <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-          Откройте для себя инновационные стартапы и инвестируйте в будущее
-        </Typography>
+    <Box
+      ref={containerRef}
+      sx={{
+        height: '100vh',
+        width: '100vw',
+        position: 'relative',
+        overflow: 'hidden',
+        backgroundColor: '#000000',
+        paddingTop: isMobile ? '56px' : '64px', // Account for top navigation
+        paddingBottom: isMobile ? '60px' : 0, // Account for bottom navigation
+      }}
+    >
+      {/* Video Cards Container */}
+      <Box
+        sx={{
+          height: '100%',
+          width: '100%',
+          position: 'relative',
+        }}
+      >
+        {pitches.map((pitch, index) => {
+          const startup = getStartupForPitch(pitch.id);
+          if (!startup) return null;
 
-        <Tabs
-          value={tabValue}
-          onChange={handleTabChange}
-          sx={{
-            mb: 3,
-            '& .MuiTab-root': {
-              textTransform: 'none',
-              fontWeight: 600,
-              minWidth: 'auto',
-              mr: 2,
-            },
-          }}
-        >
-          <Tab
-            icon={<LocalFireDepartment />}
-            iconPosition="start"
-            label="Популярные"
-          />
-          <Tab
-            icon={<AccessTime />}
-            iconPosition="start"
-            label="Новые"
-          />
-          <Tab
-            icon={<TrendingUp />}
-            iconPosition="start"
-            label="Трендовые"
-          />
-        </Tabs>
+          const isActive = index === currentIndex;
+          const offset = (index - currentIndex) * 100;
+
+          return (
+            <motion.div
+              key={pitch.id}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                transform: `translateY(${offset}%)`,
+              }}
+              animate={{
+                transform: `translateY(${offset}%)`,
+              }}
+              transition={{
+                duration: 0.3,
+                ease: 'easeInOut',
+              }}
+            >
+              <StartupVideoCard
+                pitch={pitch}
+                startup={startup}
+                autoPlay={isActive}
+                onInvest={handleInvest}
+                fullScreen={true}
+              />
+            </motion.div>
+          );
+        })}
       </Box>
 
-      <TabPanel value={tabValue} index={0}>
-        <Stack direction="row" spacing={3} sx={{ flexWrap: 'wrap', gap: 3 }}>
-          {pitches.map((pitch, index) => {
-            const startup = getStartupForPitch(pitch.id);
-            if (!startup) return null;
-            
-            return (
-              <motion.div
-                key={pitch.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: index * 0.1 }}
-                style={{ flex: '1 1 300px', maxWidth: '400px' }}
-              >
-                <StartupVideoCard
-                  pitch={pitch}
-                  startup={startup}
-                  autoPlay={index === 0}
-                  onInvest={handleInvest}
-                />
-              </motion.div>
-            );
-          })}
-        </Stack>
-      </TabPanel>
+      {/* Navigation Arrows (Desktop) */}
+      {!isMobile && (
+        <>
+          <Fade in={currentIndex > 0}>
+            <IconButton
+              onClick={scrollToPrev}
+              sx={{
+                position: 'fixed',
+                top: '50%',
+                right: 20,
+                transform: 'translateY(-100%)',
+                backgroundColor: 'rgba(0,0,0,0.5)',
+                color: 'white',
+                '&:hover': {
+                  backgroundColor: 'rgba(0,0,0,0.7)',
+                },
+                zIndex: 1000,
+              }}
+            >
+              <KeyboardArrowUp />
+            </IconButton>
+          </Fade>
 
-      <TabPanel value={tabValue} index={1}>
-        <Stack direction="row" spacing={3} sx={{ flexWrap: 'wrap', gap: 3 }}>
-          {recentPitches.map((pitch, index) => {
-            const startup = getStartupForPitch(pitch.id);
-            if (!startup) return null;
-            
-            return (
-              <motion.div
-                key={pitch.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: index * 0.1 }}
-                style={{ flex: '1 1 300px', maxWidth: '400px' }}
-              >
-                <StartupVideoCard
-                  pitch={pitch}
-                  startup={startup}
-                  onInvest={handleInvest}
-                />
-              </motion.div>
-            );
-          })}
-        </Stack>
-      </TabPanel>
+          <Fade in={currentIndex < pitches.length - 1}>
+            <IconButton
+              onClick={scrollToNext}
+              sx={{
+                position: 'fixed',
+                top: '50%',
+                right: 20,
+                transform: 'translateY(0%)',
+                backgroundColor: 'rgba(0,0,0,0.5)',
+                color: 'white',
+                '&:hover': {
+                  backgroundColor: 'rgba(0,0,0,0.7)',
+                },
+                zIndex: 1000,
+              }}
+            >
+              <KeyboardArrowDown />
+            </IconButton>
+          </Fade>
+        </>
+      )}
 
-      <TabPanel value={tabValue} index={2}>
-        <Stack direction="row" spacing={3} sx={{ flexWrap: 'wrap', gap: 3 }}>
-          {trendingPitches.map((pitch, index) => {
-            const startup = getStartupForPitch(pitch.id);
-            if (!startup) return null;
-            
-            return (
-              <motion.div
-                key={pitch.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: index * 0.1 }}
-                style={{ flex: '1 1 300px', maxWidth: '400px' }}
-              >
-                <StartupVideoCard
-                  pitch={pitch}
-                  startup={startup}
-                  onInvest={handleInvest}
-                />
-              </motion.div>
-            );
-          })}
-        </Stack>
-      </TabPanel>
+      {/* Progress Indicator */}
+      <Box
+        sx={{
+          position: 'fixed',
+          right: isMobile ? 8 : 20,
+          top: '50%',
+          transform: 'translateY(-50%)',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 1,
+          zIndex: 1000,
+        }}
+      >
+        {pitches.map((_, index) => (
+          <Box
+            key={index}
+            sx={{
+              width: 3,
+              height: index === currentIndex ? 20 : 8,
+              backgroundColor: index === currentIndex ? '#ffffff' : 'rgba(255,255,255,0.3)',
+              borderRadius: 2,
+              transition: 'all 0.3s ease',
+              cursor: 'pointer',
+            }}
+            onClick={() => setCurrentIndex(index)}
+          />
+        ))}
+      </Box>
 
-      {/* Stats Card */}
-      <Card sx={{ mt: 4 }}>
-        <CardContent>
-          <Typography variant="h6" fontWeight={600} gutterBottom>
-            Статистика платформы
-          </Typography>
-          
-          <Box sx={{ display: 'flex', justifyContent: 'space-around', mb: 2 }}>
-            <Box sx={{ textAlign: 'center' }}>
-              <Typography variant="h5" fontWeight={700} color="primary.main">
-                127
-              </Typography>
-              <Typography variant="caption" color="text.secondary">
-                Активных стартапов
-              </Typography>
-            </Box>
-            <Box sx={{ textAlign: 'center' }}>
-              <Typography variant="h5" fontWeight={700} color="secondary.main">
-                ₽2.4M
-              </Typography>
-              <Typography variant="caption" color="text.secondary">
-                Инвестировано
-              </Typography>
-            </Box>
-            <Box sx={{ textAlign: 'center' }}>
-              <Typography variant="h5" fontWeight={700} color="success.main">
-                89%
-              </Typography>
-              <Typography variant="caption" color="text.secondary">
-                Успешных сделок
-              </Typography>
-            </Box>
-          </Box>
-
-          <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center' }}>
-            Присоединяйтесь к сообществу инвесторов и стартапов
-          </Typography>
-        </CardContent>
-      </Card>
-    </Container>
+      {/* Current Video Info */}
+      <Box
+        sx={{
+          position: 'fixed',
+          bottom: isMobile ? 80 : 20,
+          left: 20,
+          color: 'white',
+          zIndex: 1000,
+        }}
+      >
+        <Typography variant="caption" sx={{ opacity: 0.7 }}>
+          {currentIndex + 1} из {pitches.length}
+        </Typography>
+      </Box>
+    </Box>
   );
 };
 

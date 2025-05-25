@@ -28,6 +28,7 @@ export interface Startup extends User {
   type: 'startup';
   companyName: string;
   industry: string;
+  category: string;
   stage: 'idea' | 'mvp' | 'early' | 'growth' | 'expansion';
   fundingGoal: number;
   currentFunding: number;
