@@ -22,6 +22,7 @@ import {
   Person,
   TrendingUp,
   AccountCircle,
+  Chat,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -45,8 +46,11 @@ const Navigation: React.FC = () => {
     switch (location.pathname) {
       case '/': return 0;
       case '/explore': return 1;
-      case '/profile': return 3;
-      default: return 0;
+      case '/profile': return 4;
+      case '/chat': return 3;
+      default: 
+        if (location.pathname.startsWith('/chat/')) return 3;
+        return 0;
     }
   };
 
@@ -106,7 +110,8 @@ const Navigation: React.FC = () => {
                 case 2: 
                   // Create new pitch - можно добавить позже
                   break;
-                case 3: navigate('/profile'); break;
+                case 3: navigate('/chat'); break;
+                case 4: navigate('/profile'); break;
               }
             }}
             sx={{
@@ -155,10 +160,18 @@ const Navigation: React.FC = () => {
               }}
             />
             <BottomNavigationAction 
+              label="Чаты" 
+              icon={<Chat />} 
+              sx={{ 
+                color: bottomNavValue === 3 ? '#ffffff' : '#666666',
+                '&.Mui-selected': { color: '#ffffff' }
+              }}
+            />
+            <BottomNavigationAction 
               label="Профиль" 
               icon={<Person />} 
               sx={{ 
-                color: bottomNavValue === 3 ? '#ffffff' : '#666666',
+                color: bottomNavValue === 4 ? '#ffffff' : '#666666',
                 '&.Mui-selected': { color: '#ffffff' }
               }}
             />
@@ -211,6 +224,9 @@ const Navigation: React.FC = () => {
           </IconButton>
           <IconButton onClick={() => navigate('/explore')}>
             <Search sx={{ color: location.pathname === '/explore' ? '#ffffff' : '#666666' }} />
+          </IconButton>
+          <IconButton onClick={() => navigate('/chat')}>
+            <Chat sx={{ color: location.pathname.startsWith('/chat') ? '#ffffff' : '#666666' }} />
           </IconButton>
 
           {/* Profile Menu */}

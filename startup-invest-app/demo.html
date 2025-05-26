@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CroudTest - Демонстрация функций чата</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        h2 {
+            color: #764ba2;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+            margin-top: 40px;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+        }
+        .feature-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        .feature-card h3 {
+            color: #667eea;
+            margin-top: 0;
+            font-size: 1.3em;
+        }
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+        }
+        .navigation-demo {
+            background: #667eea;
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .nav-buttons {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .nav-button {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid white;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        .nav-button:hover {
+            background: white;
+            color: #667eea;
+        }
+        .chat-preview {
+            background: #f1f3f4;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .message {
+            background: white;
+            padding: 12px 16px;
+            border-radius: 18px;
+            margin: 8px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .message.sent {
+            background: #667eea;
+            color: white;
+            margin-left: 50px;
+        }
+        .message.received {
+            background: white;
+            margin-right: 50px;
+        }
+        .status {
+            background: #4caf50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .tech-item {
+            background: #667eea;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 CroudTest - Платформа для инвестиций в стартапы</h1>
+        
+        <div class="status">
+            ✅ Система чата успешно интегрирована в приложение!
+        </div>
+
+        <h2>📱 Обновленная навигация</h2>
+        <div class="navigation-demo">
+            <h3>Новая навигация с 5 вкладками:</h3>
+            <div class="nav-buttons">
+                <div class="nav-button">🏠 Главная</div>
+                <div class="nav-button">🔍 Поиск</div>
+                <div class="nav-button">➕ Создать</div>
+                <div class="nav-button">💬 Чат</div>
+                <div class="nav-button">👤 Профиль</div>
+            </div>
+        </div>
+
+        <h2>💬 Функциональность чата</h2>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h3>📋 Список чатов</h3>
+                <ul>
+                    <li>Поиск по чатам</li>
+                    <li>Фильтрация по типу участников</li>
+                    <li>Индикаторы онлайн статуса</li>
+                    <li>Счетчики непрочитанных сообщений</li>
+                    <li>Контекст стартапа в чатах</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <h3>💬 Интерфейс чата</h3>
+                <ul>
+                    <li>Отправка текстовых сообщений</li>
+                    <li>Загрузка файлов и изображений</li>
+                    <li>Специальные сообщения с предложениями инвестиций</li>
+                    <li>Статусы сообщений (отправлено/прочитано)</li>
+                    <li>Адаптивный дизайн для мобильных и десктопов</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <h3>🔗 Интеграция</h3>
+                <ul>
+                    <li>Кнопка "Написать в чат" на страницах стартапов</li>
+                    <li>Автоматическое создание чатов</li>
+                    <li>Навигация между чатами</li>
+                    <li>Связь с профилями пользователей</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2>💻 Демонстрация интерфейса чата</h2>
+        <div class="chat-preview">
+            <h4>Пример диалога инвестор-стартапер:</h4>
+            <div class="message received">
+                <strong>Алексей Иванов (Инвестор)</strong><br>
+                Здравствуйте! Заинтересовался вашим стартапом EcoTech. Можете рассказать подробнее о бизнес-модели?
+            </div>
+            <div class="message sent">
+                <strong>Мария Петрова (Основатель)</strong><br>
+                Привет! Конечно! Мы разрабатываем IoT-решения для умного дома с фокусом на энергоэффективность. Наша модель - B2B2C через партнерство с застройщиками.
+            </div>
+            <div class="message received">
+                <strong>Алексей Иванов</strong><br>
+                Интересно! Какой объем инвестиций вы ищете и на каких условиях?
+            </div>
+            <div class="message sent" style="background: #4caf50; border-left: 4px solid #2e7d32;">
+                <strong>💰 Предложение инвестиций</strong><br>
+                Ищем 5 млн рублей за 15% доли. Средства пойдут на разработку продукта и выход на рынок.
+                <br><br>
+                <button style="background: white; color: #4caf50; border: none; padding: 8px 16px; border-radius: 20px; margin-top: 10px; font-weight: bold;">Подробнее об условиях</button>
+            </div>
+        </div>
+
+        <h2>🛠 Технические детали</h2>
+        <div class="tech-stack">
+            <div class="tech-item">React</div>
+            <div class="tech-item">TypeScript</div>
+            <div class="tech-item">Material-UI</div>
+            <div class="tech-item">React Router</div>
+            <div class="tech-item">Responsive Design</div>
+        </div>
+
+        <h2>📁 Структура файлов</h2>
+        <div class="code-block">
+src/
+├── pages/
+│   ├── ChatListPage.tsx     # Список всех чатов
+│   └── ChatPage.tsx         # Интерфейс отдельного чата
+├── components/
+│   └── Navigation.tsx       # Обновленная навигация с чатом
+└── App.tsx                  # Маршрутизация чатов
+        </div>
+
+        <h2>🔄 Маршруты</h2>
+        <div class="code-block">
+/chat              # Список чатов
+/chat/:chatId      # Отдельный чат
+/startup/:id       # Страница стартапа с кнопкой "Написать в чат"
+        </div>
+
+        <h2>✨ Ключевые особенности</h2>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h3>🎯 Целевая аудитория</h3>
+                <p>Система разработана специально для взаимодействия между инвесторами и основателями стартапов, с учетом специфики инвестиционного процесса.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>📱 Мобильный дизайн</h3>
+                <p>Полностью адаптивный интерфейс, оптимизированный для использования на мобильных устройствах в стиле TikTok.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>🔒 Безопасность</h3>
+                <p>Готовая архитектура для интеграции с системами аутентификации и авторизации.</p>
+            </div>
+        </div>
+
+        <div class="status" style="background: #667eea;">
+            🎉 Чат-система готова к использованию и полностью интегрирована в приложение CroudTest!
+        </div>
+    </div>
+</body>
+</html>

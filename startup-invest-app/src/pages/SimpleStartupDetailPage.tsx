@@ -20,6 +20,7 @@ import {
   LocationOn,
   CalendarToday,
   Assessment,
+  Chat,
 } from '@mui/icons-material';
 import { mockStartups } from '../data/mockData';
 
@@ -89,21 +90,41 @@ const StartupDetailPage: React.FC = () => {
               </Stack>
             </Box>
             
-            <Button
-              variant="contained"
-              size="large"
-              startIcon={<TrendingUp />}
-              onClick={() => navigate(`/invest/${startup.id}`)}
-              sx={{
-                background: 'linear-gradient(45deg, #667eea 0%, #764ba2 100%)',
-                minWidth: 200,
-                '&:hover': {
-                  background: 'linear-gradient(45deg, #5a6fd8 0%, #6a4190 100%)',
-                },
-              }}
-            >
-              Инвестировать
-            </Button>
+            <Stack direction="row" spacing={2}>
+              <Button
+                variant="contained"
+                size="large"
+                startIcon={<TrendingUp />}
+                onClick={() => navigate(`/invest/${startup.id}`)}
+                sx={{
+                  background: 'linear-gradient(45deg, #667eea 0%, #764ba2 100%)',
+                  minWidth: 200,
+                  '&:hover': {
+                    background: 'linear-gradient(45deg, #5a6fd8 0%, #6a4190 100%)',
+                  },
+                }}
+              >
+                Инвестировать
+              </Button>
+              
+              <Button
+                variant="outlined"
+                size="large"
+                startIcon={<Chat />}
+                onClick={() => navigate('/chat/1')} // Переход к чату с основателем
+                sx={{
+                  borderColor: '#667eea',
+                  color: '#667eea',
+                  minWidth: 180,
+                  '&:hover': {
+                    borderColor: '#5a6fd8',
+                    backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                  },
+                }}
+              >
+                Написать в чат
+              </Button>
+            </Stack>
           </Stack>
         </CardContent>
       </Card>

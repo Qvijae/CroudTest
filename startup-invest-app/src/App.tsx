@@ -10,6 +10,8 @@ import ExplorePage from './pages/SimpleExplorePage';
 import ProfilePage from './pages/SimpleProfilePage';
 import StartupDetailPage from './pages/SimpleStartupDetailPage';
 import InvestPage from './pages/SimpleInvestPage';
+import ChatListPage from './pages/ChatListPage';
+import ChatPage from './pages/ChatPage';
 
 const theme = createTheme({
   palette: {
@@ -158,6 +160,8 @@ function App() {
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/startup/:id" element={<StartupDetailPage />} />
               <Route path="/invest/:id" element={<InvestPage />} />
+              <Route path="/chat" element={<ChatListPage />} />
+              <Route path="/chat/:chatId" element={<ChatPage />} />
             </Routes>
           </Box>
         </Box>
