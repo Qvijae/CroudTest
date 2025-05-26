@@ -19,8 +19,10 @@ import {
   Business,
   TrendingUp,
   Edit,
+  Analytics,
 } from '@mui/icons-material';
 import { motion } from 'framer-motion';
+import PortfolioAnalytics from '../components/PortfolioAnalyticsSimple';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -225,7 +227,7 @@ const ProfilePage: React.FC = () => {
               }}
             >
               <Tab label="Мои инвестиции" />
-              <Tab label="Портфолио" />
+              <Tab label="Аналитика портфеля" icon={<Analytics />} />
               <Tab label="Настройки" />
             </Tabs>
           </Box>
@@ -280,12 +282,7 @@ const ProfilePage: React.FC = () => {
           </TabPanel>
 
           <TabPanel value={tabValue} index={1}>
-            <Typography variant="h6" gutterBottom sx={{ color: '#ffffff' }}>
-              Анализ портфолио
-            </Typography>
-            <Typography variant="body2" sx={{ color: '#cccccc' }}>
-              Здесь будет детальная аналитика вашего инвестиционного портфолио
-            </Typography>
+            <PortfolioAnalytics />
           </TabPanel>
 
           <TabPanel value={tabValue} index={2}>

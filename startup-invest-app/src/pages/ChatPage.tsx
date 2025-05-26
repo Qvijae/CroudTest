@@ -401,11 +401,14 @@ const ChatPage: React.FC = () => {
         sx={{
           p: 2,
           borderTop: '1px solid #333333',
-          backgroundColor: '#000000',
+          backgroundColor: '#111111',
+          position: 'sticky',
+          bottom: 0,
+          zIndex: 10,
         }}
       >
         <Box sx={{ display: 'flex', alignItems: 'flex-end', gap: 1 }}>
-          <IconButton sx={{ color: '#666666' }}>
+          <IconButton sx={{ color: '#666666', mb: 0.5 }}>
             <AttachFile />
           </IconButton>
           
@@ -419,14 +422,16 @@ const ChatPage: React.FC = () => {
             onKeyPress={handleKeyPress}
             sx={{
               '& .MuiOutlinedInput-root': {
-                backgroundColor: '#111111',
-                border: '1px solid #333333',
-                borderRadius: '20px',
+                backgroundColor: '#222222',
+                border: '2px solid #444444',
+                borderRadius: '24px',
+                minHeight: '48px',
+                padding: '8px 16px',
                 '& fieldset': {
                   border: 'none',
                 },
                 '&:hover': {
-                  borderColor: '#555555',
+                  borderColor: '#666666',
                 },
                 '&.Mui-focused': {
                   borderColor: '#ffffff',
@@ -434,8 +439,10 @@ const ChatPage: React.FC = () => {
               },
               '& .MuiInputBase-input': {
                 color: '#ffffff',
+                fontSize: '16px',
+                padding: '8px 0',
                 '&::placeholder': {
-                  color: '#666666',
+                  color: '#888888',
                   opacity: 1,
                 },
               },
@@ -446,13 +453,17 @@ const ChatPage: React.FC = () => {
             onClick={handleSendMessage}
             disabled={!message.trim()}
             sx={{
-              color: message.trim() ? '#ffffff' : '#666666',
-              backgroundColor: message.trim() ? '#ffffff' : 'transparent',
+              color: '#000000',
+              backgroundColor: message.trim() ? '#ffffff' : '#444444',
+              width: 48,
+              height: 48,
+              mb: 0.5,
               '&:hover': {
-                backgroundColor: message.trim() ? '#f0f0f0' : '#222222',
+                backgroundColor: message.trim() ? '#f0f0f0' : '#555555',
               },
-              '& .MuiSvgIcon-root': {
-                color: message.trim() ? '#000000' : '#666666',
+              '&:disabled': {
+                backgroundColor: '#444444',
+                color: '#666666',
               },
             }}
           >

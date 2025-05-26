@@ -18,7 +18,7 @@ import {
   Favorite,
   FavoriteBorder,
   Share,
-  Comment,
+  Comment as CommentIcon,
   TrendingUp,
   Verified,
   VolumeOff,
@@ -26,8 +26,11 @@ import {
 } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import ReactPlayer from 'react-player';
-import { StartupPitch, Startup } from '../types';
+import { StartupPitch, Startup, Comment } from '../types';
 import { useNavigate } from 'react-router-dom';
+import ShareDialog from './ShareDialog';
+import CommentsDialog from './CommentsDialog';
+import InvestDialog from './InvestDialog';
 
 interface StartupVideoCardProps {
   pitch: StartupPitch;
@@ -48,6 +51,10 @@ const StartupVideoCard: React.FC<StartupVideoCardProps> = ({
   const [isLiked, setIsLiked] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [showControls, setShowControls] = useState(false);
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [commentsDialogOpen, setCommentsDialogOpen] = useState(false);
+  const [investDialogOpen, setInvestDialogOpen] = useState(false);
+  const [comments, setComments] = useState(pitch.comments);
   const playerRef = useRef<ReactPlayer>(null);
   const navigate = useNavigate();
   const theme = useTheme();
@@ -82,11 +89,35 @@ const StartupVideoCard: React.FC<StartupVideoCardProps> = ({
   };
 
   const handleInvest = () => {
+    setInvestDialogOpen(true);
+  };
+
+  const handleInvestConfirm = (amount: number) => {
     if (onInvest) {
       onInvest(pitch.id);
-    } else {
-      navigate(`/invest/${pitch.id}`);
     }
+    console.log(`Invested ${amount} in ${pitch.title}`);
+  };
+
+  const handleShare = () => {
+    setShareDialogOpen(true);
+  };
+
+  const handleComments = () => {
+    setCommentsDialogOpen(true);
+  };
+
+  const handleAddComment = (commentText: string) => {
+    const newComment: Comment = {
+      id: `c${Date.now()}`,
+      userId: 'current_user',
+      userName: 'Вы',
+      userAvatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face',
+      text: commentText,
+      createdAt: new Date(),
+      likes: 0,
+    };
+    setComments([...comments, newComment]);
   };
 
   const handleProfileClick = () => {
@@ -346,6 +377,10 @@ const StartupVideoCard: React.FC<StartupVideoCardProps> = ({
                 {/* Comments */}
                 <Box sx={{ textAlign: 'center' }}>
                   <IconButton
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleComments();
+                    }}
                     sx={{
                       backgroundColor: 'rgba(0,0,0,0.6)',
                       color: 'white',
@@ -356,16 +391,20 @@ const StartupVideoCard: React.FC<StartupVideoCardProps> = ({
                       },
                     }}
                   >
-                    <Comment sx={{ fontSize: 28 }} />
+                    <CommentIcon sx={{ fontSize: 28 }} />
                   </IconButton>
                   <Typography variant="body2" sx={{ color: 'white', mt: 1, fontWeight: 600 }}>
-                    {formatNumber(pitch.comments.length)}
+                    {formatNumber(comments.length)}
                   </Typography>
                 </Box>
 
                 {/* Share */}
                 <Box sx={{ textAlign: 'center' }}>
                   <IconButton
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleShare();
+                    }}
                     sx={{
                       backgroundColor: 'rgba(0,0,0,0.6)',
                       color: 'white',
@@ -433,6 +472,30 @@ const StartupVideoCard: React.FC<StartupVideoCardProps> = ({
             </Box>
           </Box>
         </Fade>
+
+        {/* Dialogs for fullscreen mode */}
+        <ShareDialog
+          open={shareDialogOpen}
+          onClose={() => setShareDialogOpen(false)}
+          pitchId={pitch.id}
+          pitchTitle={pitch.title}
+        />
+
+        <CommentsDialog
+          open={commentsDialogOpen}
+          onClose={() => setCommentsDialogOpen(false)}
+          comments={comments}
+          pitchTitle={pitch.title}
+          onAddComment={handleAddComment}
+        />
+
+        <InvestDialog
+          open={investDialogOpen}
+          onClose={() => setInvestDialogOpen(false)}
+          pitch={pitch}
+          startup={startup}
+          onInvest={handleInvestConfirm}
+        />
       </Box>
     );
   }
@@ -639,6 +702,10 @@ const StartupVideoCard: React.FC<StartupVideoCardProps> = ({
 
             <Box sx={{ textAlign: 'center' }}>
               <IconButton
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleComments();
+                }}
                 sx={{
                   backgroundColor: 'rgba(0,0,0,0.6)',
                   color: 'white',
@@ -647,15 +714,19 @@ const StartupVideoCard: React.FC<StartupVideoCardProps> = ({
                   },
                 }}
               >
-                <Comment />
+                <CommentIcon />
               </IconButton>
               <Typography variant="caption" sx={{ color: 'white', display: 'block', mt: 0.5 }}>
-                {formatNumber(pitch.comments.length)}
+                {formatNumber(comments.length)}
               </Typography>
             </Box>
 
             <Box sx={{ textAlign: 'center' }}>
               <IconButton
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleShare();
+                }}
                 sx={{
                   backgroundColor: 'rgba(0,0,0,0.6)',
                   color: 'white',
@@ -751,6 +822,30 @@ const StartupVideoCard: React.FC<StartupVideoCardProps> = ({
           </Box>
         </CardContent>
       </Card>
+
+      {/* Dialogs */}
+      <ShareDialog
+        open={shareDialogOpen}
+        onClose={() => setShareDialogOpen(false)}
+        pitchId={pitch.id}
+        pitchTitle={pitch.title}
+      />
+
+      <CommentsDialog
+        open={commentsDialogOpen}
+        onClose={() => setCommentsDialogOpen(false)}
+        comments={comments}
+        pitchTitle={pitch.title}
+        onAddComment={handleAddComment}
+      />
+
+      <InvestDialog
+        open={investDialogOpen}
+        onClose={() => setInvestDialogOpen(false)}
+        pitch={pitch}
+        startup={startup}
+        onInvest={handleInvestConfirm}
+      />
     </motion.div>
   );
 };
