@@ -8,10 +8,12 @@ import Navigation from './components/Navigation';
 import FeedPage from './pages/FeedPage';
 import ExplorePage from './pages/SimpleExplorePage';
 import ProfilePage from './pages/SimpleProfilePage';
+import StartupProfilePage from './pages/StartupProfilePage';
 import StartupDetailPage from './pages/SimpleStartupDetailPage';
 import InvestPage from './pages/SimpleInvestPage';
 import ChatListPage from './pages/ChatListPage';
 import ChatPage from './pages/ChatPage';
+import { UserProvider } from './contexts/UserContext';
 
 const theme = createTheme({
   palette: {
@@ -150,22 +152,25 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Router>
-        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: '#000000' }}>
-          <Navigation />
-          <Box component="main" sx={{ flexGrow: 1 }}>
-            <Routes>
-              <Route path="/" element={<FeedPage />} />
-              <Route path="/explore" element={<ExplorePage />} />
-              <Route path="/profile" element={<ProfilePage />} />
-              <Route path="/startup/:id" element={<StartupDetailPage />} />
-              <Route path="/invest/:id" element={<InvestPage />} />
-              <Route path="/chat" element={<ChatListPage />} />
-              <Route path="/chat/:chatId" element={<ChatPage />} />
-            </Routes>
+      <UserProvider>
+        <Router>
+          <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: '#000000' }}>
+            <Navigation />
+            <Box component="main" sx={{ flexGrow: 1 }}>
+              <Routes>
+                <Route path="/" element={<FeedPage />} />
+                <Route path="/explore" element={<ExplorePage />} />
+                <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/startup-profile" element={<StartupProfilePage />} />
+                <Route path="/startup/:id" element={<StartupDetailPage />} />
+                <Route path="/invest/:id" element={<InvestPage />} />
+                <Route path="/chat" element={<ChatListPage />} />
+                <Route path="/chat/:chatId" element={<ChatPage />} />
+              </Routes>
+            </Box>
           </Box>
-        </Box>
-      </Router>
+        </Router>
+      </UserProvider>
     </ThemeProvider>
   );
 }

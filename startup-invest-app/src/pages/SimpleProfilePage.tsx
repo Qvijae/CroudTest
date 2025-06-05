@@ -23,6 +23,7 @@ import {
 } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import PortfolioAnalytics from '../components/PortfolioAnalyticsSimple';
+import InvestorSettings from '../components/InvestorSettings';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -286,12 +287,7 @@ const ProfilePage: React.FC = () => {
           </TabPanel>
 
           <TabPanel value={tabValue} index={2}>
-            <Typography variant="h6" gutterBottom sx={{ color: '#ffffff' }}>
-              Настройки аккаунта
-            </Typography>
-            <Typography variant="body2" sx={{ color: '#cccccc' }}>
-              Управление настройками профиля и уведомлений
-            </Typography>
+            <InvestorSettings />
           </TabPanel>
         </Card>
       </Container>

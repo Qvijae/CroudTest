@@ -13,6 +13,11 @@ import {
   Paper,
   useTheme,
   useMediaQuery,
+  Divider,
+  ListItemIcon,
+  ListItemText,
+  Switch,
+  FormControlLabel,
 } from '@mui/material';
 import {
   Home,
@@ -23,16 +28,24 @@ import {
   TrendingUp,
   AccountCircle,
   Chat,
+  Business,
+  SwapHoriz,
+  Settings,
+  Logout,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useUser } from '../contexts/UserContext';
+import ProfileSwitcher from './ProfileSwitcher';
 
 const Navigation: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [bottomNavValue, setBottomNavValue] = useState(0);
+  const [profileSwitcherOpen, setProfileSwitcherOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const { userType, switchUserType } = useUser();
 
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -47,6 +60,7 @@ const Navigation: React.FC = () => {
       case '/': return 0;
       case '/explore': return 1;
       case '/profile': return 4;
+      case '/startup-profile': return 4;
       case '/chat': return 3;
       default: 
         if (location.pathname.startsWith('/chat/')) return 3;
@@ -72,7 +86,27 @@ const Navigation: React.FC = () => {
             zIndex: 1100,
           }}
         >
-          <Toolbar sx={{ justifyContent: 'center', minHeight: '56px !important' }}>
+          <Toolbar sx={{ justifyContent: 'space-between', minHeight: '56px !important', px: 2 }}>
+            {/* Profile switcher button */}
+            <IconButton
+              onClick={() => setProfileSwitcherOpen(true)}
+              sx={{ 
+                color: '#ffffff',
+                backgroundColor: '#222222',
+                borderRadius: '12px',
+                px: 1.5,
+                py: 0.5,
+                '&:hover': {
+                  backgroundColor: '#333333',
+                }
+              }}
+            >
+              <SwapHoriz sx={{ fontSize: 20, mr: 0.5 }} />
+              <Typography variant="caption" sx={{ fontSize: '12px', fontWeight: 500 }}>
+                {userType === 'investor' ? 'Инвестор' : 'Стартап'}
+              </Typography>
+            </IconButton>
+
             <Typography 
               variant="h6" 
               sx={{ 
@@ -84,6 +118,21 @@ const Navigation: React.FC = () => {
             >
               StartupInvest
             </Typography>
+
+            {/* Profile avatar */}
+            <Avatar 
+              sx={{ 
+                width: 32, 
+                height: 32, 
+                border: '2px solid #333333',
+                cursor: 'pointer'
+              }}
+              src={userType === 'investor' 
+                ? "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
+                : "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&h=150&fit=crop&crop=face"
+              }
+              onClick={() => navigate(userType === 'investor' ? '/profile' : '/startup-profile')}
+            />
           </Toolbar>
         </AppBar>
 
@@ -111,7 +160,7 @@ const Navigation: React.FC = () => {
                   // Create new pitch - можно добавить позже
                   break;
                 case 3: navigate('/chat'); break;
-                case 4: navigate('/profile'); break;
+                case 4: navigate(userType === 'investor' ? '/profile' : '/startup-profile'); break;
               }
             }}
             sx={{
@@ -177,6 +226,12 @@ const Navigation: React.FC = () => {
             />
           </BottomNavigation>
         </Paper>
+
+        {/* Profile Switcher Modal */}
+        <ProfileSwitcher
+          open={profileSwitcherOpen}
+          onClose={() => setProfileSwitcherOpen(false)}
+        />
       </>
     );
   }
@@ -261,15 +316,74 @@ const Navigation: React.FC = () => {
               },
             }}
           >
-            <MenuItem onClick={() => navigate('/profile')}>
-              <AccountCircle sx={{ mr: 2, color: '#ffffff' }} />
-              Мой профиль
+            <MenuItem onClick={() => navigate(userType === 'investor' ? '/profile' : '/startup-profile')}>
+              <ListItemIcon>
+                <AccountCircle sx={{ color: '#ffffff' }} />
+              </ListItemIcon>
+              <ListItemText primary="Мой профиль" />
             </MenuItem>
-            <MenuItem onClick={() => {}}>
-              Настройки
+            
+            <Divider sx={{ borderColor: '#333333' }} />
+            
+            <MenuItem>
+              <ListItemIcon>
+                <SwapHoriz sx={{ color: '#ffffff' }} />
+              </ListItemIcon>
+              <ListItemText primary="Переключить профиль" />
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={userType === 'startup'}
+                    onChange={switchUserType}
+                    size="small"
+                    sx={{
+                      '& .MuiSwitch-switchBase.Mui-checked': {
+                        color: '#ffffff',
+                      },
+                      '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                        backgroundColor: '#ffffff',
+                      },
+                    }}
+                  />
+                }
+                label=""
+                sx={{ ml: 1 }}
+              />
             </MenuItem>
+            
+            <MenuItem>
+              <ListItemIcon>
+                {userType === 'investor' ? (
+                  <Person sx={{ color: '#ffffff' }} />
+                ) : (
+                  <Business sx={{ color: '#ffffff' }} />
+                )}
+              </ListItemIcon>
+              <ListItemText 
+                primary={userType === 'investor' ? 'Инвестор' : 'Стартап'} 
+                secondary={userType === 'investor' ? 'Ищу проекты для инвестиций' : 'Ищу инвестиции'}
+                sx={{
+                  '& .MuiListItemText-secondary': {
+                    color: '#666666',
+                  }
+                }}
+              />
+            </MenuItem>
+            
+            <Divider sx={{ borderColor: '#333333' }} />
+            
             <MenuItem onClick={() => {}}>
-              Выйти
+              <ListItemIcon>
+                <Settings sx={{ color: '#ffffff' }} />
+              </ListItemIcon>
+              <ListItemText primary="Настройки" />
+            </MenuItem>
+            
+            <MenuItem onClick={() => {}}>
+              <ListItemIcon>
+                <Logout sx={{ color: '#ff4444' }} />
+              </ListItemIcon>
+              <ListItemText primary="Выйти" sx={{ color: '#ff4444' }} />
             </MenuItem>
           </Menu>
         </Box>
