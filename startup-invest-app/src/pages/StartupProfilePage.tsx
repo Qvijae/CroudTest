@@ -508,7 +508,7 @@ const StartupProfilePage: React.FC = () => {
 
           {/* Команда */}
           <TabPanel value={tabValue} index={1}>
-            <Stack direction={{ xs: 'column', md: 'row' }} spacing={3} flexWrap="wrap" useFlexGap>
+            <Stack component="div" direction={{ xs: 'column', md: 'row' }} spacing={3} flexWrap="wrap">
               {teamMembers.map((member, index) => (
                 <Box key={member.id} sx={{ flex: { xs: '1 1 100%', md: '1 1 calc(33.333% - 16px)' } }}>
                   <motion.div
@@ -572,7 +572,7 @@ const StartupProfilePage: React.FC = () => {
                   <Typography variant="h6" fontWeight={600} gutterBottom sx={{ color: '#ffffff' }}>
                     Ключевые метрики
                   </Typography>
-                  <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} flexWrap="wrap" useFlexGap>
+                  <Stack component="div" direction={{ xs: 'column', md: 'row' }} spacing={2} flexWrap="wrap">
                     <Box sx={{ flex: { xs: '1 1 100%', md: '1 1 calc(25% - 12px)' }, textAlign: 'center' }}>
                       <Typography variant="h4" fontWeight={700} sx={{ color: '#00ff00' }}>
                         99.2%

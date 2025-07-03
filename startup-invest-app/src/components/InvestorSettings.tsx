@@ -357,7 +357,7 @@ const InvestorSettings: React.FC = () => {
               <Typography variant="subtitle1" sx={{ color: '#ffffff', mb: 2 }}>
                 Предпочитаемые стадии
               </Typography>
-              <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+              <Stack component="div" direction="row" spacing={1} flexWrap="wrap">
                 {investmentStages.map((stage) => (
                   <Chip
                     key={stage.value}
