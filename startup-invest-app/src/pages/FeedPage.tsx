@@ -9,7 +9,7 @@ import {
   Tabs,
   Tab,
 } from '@mui/material';
-import { SwipeableViews } from 'react-swipeable-views-utils';
+import SwipeableViews from 'react-swipeable-views';
 import {
   KeyboardArrowUp,
   KeyboardArrowDown,
