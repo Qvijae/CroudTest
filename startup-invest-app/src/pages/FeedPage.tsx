@@ -6,10 +6,15 @@ import {
   useTheme,
   useMediaQuery,
   Fade,
+  Tabs,
+  Tab,
+  SwipeableViews,
 } from '@mui/material';
 import {
   KeyboardArrowUp,
   KeyboardArrowDown,
+  Subscriptions,
+  Explore,
 } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import StartupVideoCard from '../components/StartupVideoCard';
@@ -18,18 +23,58 @@ import { StartupPitch, Startup } from '../types';
 
 const FeedPage: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [feedTab, setFeedTab] = useState(0); // 0 - Рекомендации, 1 - Подписки
   const [pitches, setPitches] = useState<StartupPitch[]>([]);
+  const [subscriptionPitches, setSubscriptionPitches] = useState<StartupPitch[]>([]);
+  const [subscribedStartups, setSubscribedStartups] = useState<string[]>([]);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setPitches(mockPitches);
+    // Инициализируем подписки на несколько стартапов для демонстрации
+    const initialSubscriptions = ['startup1', 'startup3', 'startup5'];
+    setSubscribedStartups(initialSubscriptions);
+    
+    // Фильтруем питчи только от стартапов, на которые подписан пользователь
+    const filteredPitches = mockPitches.filter(pitch => {
+      const startup = mockStartups.find(s => s.id === pitch.startupId);
+      return startup && initialSubscriptions.includes(startup.id);
+    });
+    setSubscriptionPitches(filteredPitches);
   }, []);
 
-  const getStartupForPitch = (pitchId: string): Startup | undefined => {
-    const pitch = pitches.find(p => p.id === pitchId);
+  const getStartupForPitch = (pitchId: string, source: StartupPitch[] = pitches): Startup | undefined => {
+    const pitch = source.find(p => p.id === pitchId);
     return pitch ? mockStartups.find(s => s.id === pitch.startupId) : undefined;
+  };
+  
+  // Функция для подписки/отписки от стартапа
+  const handleSubscribe = (startupId: string) => {
+    if (subscribedStartups.includes(startupId)) {
+      // Отписываемся
+      const newSubscriptions = subscribedStartups.filter(id => id !== startupId);
+      setSubscribedStartups(newSubscriptions);
+      
+      // Обновляем ленту подписок
+      const newSubscriptionPitches = mockPitches.filter(pitch => {
+        const startup = mockStartups.find(s => s.id === pitch.startupId);
+        return startup && newSubscriptions.includes(startup.id);
+      });
+      setSubscriptionPitches(newSubscriptionPitches);
+    } else {
+      // Подписываемся
+      const newSubscriptions = [...subscribedStartups, startupId];
+      setSubscribedStartups(newSubscriptions);
+      
+      // Обновляем ленту подписок
+      const newSubscriptionPitches = mockPitches.filter(pitch => {
+        const startup = mockStartups.find(s => s.id === pitch.startupId);
+        return startup && newSubscriptions.includes(startup.id);
+      });
+      setSubscriptionPitches(newSubscriptionPitches);
+    }
   };
 
   const handleInvest = (pitchId: string) => {
@@ -113,51 +158,171 @@ const FeedPage: React.FC = () => {
         paddingBottom: isMobile ? '60px' : 0, // Account for bottom navigation
       }}
     >
-      {/* Video Cards Container */}
-      <Box
-        sx={{
-          height: '100%',
-          width: '100%',
-          position: 'relative',
-        }}
+      {/* Tabs for switching between Recommendations and Subscriptions */}
+      <Box sx={{ 
+        position: 'absolute', 
+        top: isMobile ? 56 : 64, 
+        left: 0, 
+        right: 0, 
+        zIndex: 1000,
+        backgroundColor: 'rgba(0,0,0,0.7)',
+        backdropFilter: 'blur(10px)',
+        borderBottom: '1px solid rgba(255,255,255,0.1)'
+      }}>
+        <Tabs
+          value={feedTab}
+          onChange={(e, newValue) => {
+            setFeedTab(newValue);
+            setCurrentIndex(0); // Reset index when switching tabs
+          }}
+          variant="fullWidth"
+          sx={{
+            '& .MuiTab-root': {
+              color: '#888888',
+              fontWeight: 600,
+              fontSize: '14px',
+              textTransform: 'none',
+              minHeight: '48px',
+              '&.Mui-selected': {
+                color: '#ffffff',
+              },
+            },
+            '& .MuiTabs-indicator': {
+              backgroundColor: '#ffffff',
+            },
+          }}
+        >
+          <Tab icon={<Explore sx={{ fontSize: 20, mr: 1 }} />} label="Рекомендации" iconPosition="start" />
+          <Tab icon={<Subscriptions sx={{ fontSize: 20, mr: 1 }} />} label="Подписки" iconPosition="start" />
+        </Tabs>
+      </Box>
+
+      {/* SwipeableViews for horizontal swiping between tabs */}
+      <SwipeableViews
+        axis="x"
+        index={feedTab}
+        onChangeIndex={setFeedTab}
+        style={{ height: '100%', width: '100%', marginTop: 48 }} // Add margin for tabs
+        containerStyle={{ height: '100%', width: '100%' }}
+        slideStyle={{ height: '100%', width: '100%' }}
+        resistance
       >
-        {pitches.map((pitch, index) => {
-          const startup = getStartupForPitch(pitch.id);
-          if (!startup) return null;
+        {/* Recommendations Feed */}
+        <Box
+          sx={{
+            height: '100%',
+            width: '100%',
+            position: 'relative',
+          }}
+        >
+          {pitches.map((pitch, index) => {
+            const startup = getStartupForPitch(pitch.id);
+            if (!startup) return null;
 
-          const isActive = index === currentIndex;
-          const offset = (index - currentIndex) * 100;
+            const isActive = index === currentIndex && feedTab === 0;
+            const offset = (index - currentIndex) * 100;
 
-          return (
-            <motion.div
-              key={pitch.id}
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                transform: `translateY(${offset}%)`,
-              }}
-              animate={{
-                transform: `translateY(${offset}%)`,
-              }}
-              transition={{
-                duration: 0.3,
-                ease: 'easeInOut',
+            return (
+              <motion.div
+                key={pitch.id}
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  transform: `translateY(${offset}%)`,
+                }}
+                animate={{
+                  transform: `translateY(${offset}%)`,
+                }}
+                transition={{
+                  duration: 0.3,
+                  ease: 'easeInOut',
+                }}
+              >
+                <StartupVideoCard
+                  pitch={pitch}
+                  startup={startup}
+                  autoPlay={isActive}
+                  onInvest={handleInvest}
+                  fullScreen={true}
+                  isSubscribed={subscribedStartups.includes(startup.id)}
+                  onSubscribe={() => handleSubscribe(startup.id)}
+                />
+              </motion.div>
+            );
+          })}
+        </Box>
+
+        {/* Subscriptions Feed */}
+        <Box
+          sx={{
+            height: '100%',
+            width: '100%',
+            position: 'relative',
+          }}
+        >
+          {subscriptionPitches.length > 0 ? (
+            subscriptionPitches.map((pitch, index) => {
+              const startup = getStartupForPitch(pitch.id, subscriptionPitches);
+              if (!startup) return null;
+
+              const isActive = index === currentIndex && feedTab === 1;
+              const offset = (index - currentIndex) * 100;
+
+              return (
+                <motion.div
+                  key={pitch.id}
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    transform: `translateY(${offset}%)`,
+                  }}
+                  animate={{
+                    transform: `translateY(${offset}%)`,
+                  }}
+                  transition={{
+                    duration: 0.3,
+                    ease: 'easeInOut',
+                  }}
+                >
+                  <StartupVideoCard
+                    pitch={pitch}
+                    startup={startup}
+                    autoPlay={isActive}
+                    onInvest={handleInvest}
+                    fullScreen={true}
+                    isSubscribed={true}
+                    onSubscribe={() => handleSubscribe(startup.id)}
+                  />
+                </motion.div>
+              );
+            })
+          ) : (
+            <Box 
+              sx={{ 
+                height: '100%', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                flexDirection: 'column',
+                p: 3
               }}
             >
-              <StartupVideoCard
-                pitch={pitch}
-                startup={startup}
-                autoPlay={isActive}
-                onInvest={handleInvest}
-                fullScreen={true}
-              />
-            </motion.div>
-          );
-        })}
+              <Typography variant="h6" color="white" align="center" gutterBottom>
+                У вас пока нет подписок
+              </Typography>
+              <Typography variant="body1" color="#888888" align="center">
+                Подпишитесь на интересные стартапы, чтобы видеть их видео здесь
+              </Typography>
+            </Box>
+          )}
       </Box>
+      </SwipeableViews>
 
       {/* Navigation Arrows (Desktop) */}
       {!isMobile && (
@@ -182,7 +347,8 @@ const FeedPage: React.FC = () => {
             </IconButton>
           </Fade>
 
-          <Fade in={currentIndex < pitches.length - 1}>
+          <Fade in={(feedTab === 0 && currentIndex < pitches.length - 1) || 
+                    (feedTab === 1 && currentIndex < subscriptionPitches.length - 1)}>
             <IconButton
               onClick={scrollToNext}
               sx={{
@@ -217,7 +383,7 @@ const FeedPage: React.FC = () => {
           zIndex: 1000,
         }}
       >
-        {pitches.map((_, index) => (
+        {(feedTab === 0 ? pitches : subscriptionPitches).map((_, index) => (
           <Box
             key={index}
             sx={{
@@ -244,7 +410,7 @@ const FeedPage: React.FC = () => {
         }}
       >
         <Typography variant="caption" sx={{ opacity: 0.7 }}>
-          {currentIndex + 1} из {pitches.length}
+          {currentIndex + 1} из {feedTab === 0 ? pitches.length : subscriptionPitches.length}
         </Typography>
       </Box>
     </Box>

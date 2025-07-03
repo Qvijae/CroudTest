@@ -12,6 +12,7 @@ import {
   Chip,
   LinearProgress,
   Stack,
+  Grid,
 } from '@mui/material';
 import {
   LocationOn,
@@ -20,10 +21,14 @@ import {
   TrendingUp,
   Edit,
   Analytics,
+  Favorite,
+  Settings,
+  Security,
 } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import PortfolioAnalytics from '../components/PortfolioAnalyticsSimple';
 import InvestorSettings from '../components/InvestorSettings';
+import { mockStartups } from '../data/mockData';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -93,6 +98,9 @@ const ProfilePage: React.FC = () => {
       returns: 45.2,
     },
   ];
+  
+  // Избранные стартапы (для демонстрации)
+  const favoriteStartups = mockStartups.slice(0, 4);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('ru-RU', {
@@ -215,21 +223,27 @@ const ProfilePage: React.FC = () => {
             <Tabs 
               value={tabValue} 
               onChange={handleTabChange}
+              variant="scrollable"
+              scrollButtons="auto"
               sx={{
                 '& .MuiTab-root': {
                   color: '#cccccc',
                   '&.Mui-selected': {
                     color: '#ffffff',
                   },
+                  textTransform: 'none',
+                  fontSize: '14px',
+                  minHeight: '48px',
                 },
                 '& .MuiTabs-indicator': {
                   backgroundColor: '#ffffff',
                 },
               }}
             >
-              <Tab label="Мои инвестиции" />
-              <Tab label="Аналитика портфеля" icon={<Analytics />} />
-              <Tab label="Настройки" />
+              <Tab label="Мои инвестиции" icon={<TrendingUp sx={{ fontSize: 20 }} />} iconPosition="start" />
+              <Tab label="Избранное" icon={<Favorite sx={{ fontSize: 20 }} />} iconPosition="start" />
+              <Tab label="Аналитика портфеля" icon={<Analytics sx={{ fontSize: 20 }} />} iconPosition="start" />
+              <Tab label="Настройки" icon={<Settings sx={{ fontSize: 20 }} />} iconPosition="start" />
             </Tabs>
           </Box>
 
@@ -283,10 +297,142 @@ const ProfilePage: React.FC = () => {
           </TabPanel>
 
           <TabPanel value={tabValue} index={1}>
-            <PortfolioAnalytics />
+            <Box sx={{ py: 2 }}>
+              <Typography variant="h6" gutterBottom sx={{ color: '#ffffff', mb: 3 }}>
+                Избранные стартапы
+              </Typography>
+              
+              <Grid container spacing={3}>
+                {favoriteStartups.map((startup) => (
+                  <Grid item xs={12} sm={6} md={4} key={startup.id}>
+                    <Card 
+                      sx={{ 
+                        backgroundColor: '#222222', 
+                        border: '1px solid #444444',
+                        transition: 'all 0.3s ease',
+                        '&:hover': {
+                          transform: 'translateY(-5px)',
+                          boxShadow: '0 10px 20px rgba(0,0,0,0.2)',
+                          borderColor: '#666666',
+                        },
+                        height: '100%',
+                        display: 'flex',
+                        flexDirection: 'column',
+                      }}
+                    >
+                      <Box 
+                        sx={{ 
+                          height: 140, 
+                          overflow: 'hidden',
+                          position: 'relative',
+                        }}
+                      >
+                        <Box
+                          component="img"
+                          src={`https://source.unsplash.com/random/400x200?${startup.industry.toLowerCase()}`}
+                          alt={startup.companyName}
+                          sx={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover',
+                          }}
+                        />
+                        <Box
+                          sx={{
+                            position: 'absolute',
+                            top: 0,
+                            right: 0,
+                            p: 1,
+                          }}
+                        >
+                          <IconButton
+                            sx={{
+                              backgroundColor: 'rgba(0,0,0,0.5)',
+                              color: '#FFC107',
+                              '&:hover': {
+                                backgroundColor: 'rgba(0,0,0,0.7)',
+                              },
+                            }}
+                          >
+                            <Favorite fontSize="small" />
+                          </IconButton>
+                        </Box>
+                      </Box>
+                      
+                      <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                          <Avatar 
+                            src={startup.avatar} 
+                            sx={{ width: 40, height: 40, mr: 1.5 }}
+                          />
+                          <Box>
+                            <Typography variant="subtitle1" sx={{ fontWeight: 600, color: '#ffffff' }}>
+                              {startup.companyName}
+                            </Typography>
+                            <Typography variant="caption" sx={{ color: '#999999' }}>
+                              {startup.industry}
+                            </Typography>
+                          </Box>
+                        </Box>
+                        
+                        <Typography variant="body2" sx={{ color: '#cccccc', mb: 2, flexGrow: 1 }}>
+                          {startup.description.length > 100 
+                            ? `${startup.description.substring(0, 100)}...` 
+                            : startup.description}
+                        </Typography>
+                        
+                        <Box sx={{ mb: 1.5 }}>
+                          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
+                            <Typography variant="caption" sx={{ color: '#999999' }}>
+                              Собрано
+                            </Typography>
+                            <Typography variant="caption" sx={{ color: '#ffffff' }}>
+                              {Math.round((startup.fundingRaised / startup.fundingGoal) * 100)}%
+                            </Typography>
+                          </Box>
+                          <LinearProgress
+                            variant="determinate"
+                            value={(startup.fundingRaised / startup.fundingGoal) * 100}
+                            sx={{ 
+                              height: 4, 
+                              borderRadius: 2,
+                              backgroundColor: 'rgba(255,255,255,0.1)',
+                              '& .MuiLinearProgress-bar': {
+                                backgroundColor: '#ffffff',
+                              }
+                            }}
+                          />
+                        </Box>
+                        
+                        <Button 
+                          variant="outlined"
+                          fullWidth
+                          onClick={() => {}}
+                          sx={{
+                            borderColor: '#666666',
+                            color: '#ffffff',
+                            '&:hover': {
+                              borderColor: '#ffffff',
+                              backgroundColor: 'rgba(255,255,255,0.1)',
+                            },
+                            textTransform: 'none',
+                          }}
+                        >
+                          Подробнее
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                ))}
+              </Grid>
+            </Box>
           </TabPanel>
 
           <TabPanel value={tabValue} index={2}>
+            <PortfolioAnalytics />
+          </TabPanel>
+
+          <TabPanel value={tabValue} index={3}>
             <InvestorSettings />
           </TabPanel>
         </Card>

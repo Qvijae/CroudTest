@@ -383,6 +383,43 @@ const ChatPage: React.FC = () => {
           </Menu>
         </Toolbar>
       </AppBar>
+      
+      {/* Startup Info Card */}
+      <Box sx={{ 
+        p: 2, 
+        backgroundColor: '#111111', 
+        borderBottom: '1px solid #333333',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 2,
+        cursor: 'pointer',
+        '&:hover': {
+          backgroundColor: '#1a1a1a',
+        }
+      }}
+      onClick={() => navigate('/startup/startup1')}
+      >
+        <Avatar
+          src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&h=150&fit=crop&crop=face"
+          sx={{ width: 48, height: 48 }}
+        />
+        <Box sx={{ flex: 1 }}>
+          <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+            EcoTech Solutions
+          </Typography>
+          <Typography variant="body2" color="text.secondary" noWrap>
+            Инновационные решения для экологического мониторинга
+          </Typography>
+        </Box>
+        <Chip
+          label="Финтех"
+          size="small"
+          sx={{
+            backgroundColor: '#333333',
+            color: '#ffffff',
+          }}
+        />
+      </Box>
 
       {/* Messages */}
       <Box

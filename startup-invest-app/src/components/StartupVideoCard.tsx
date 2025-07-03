@@ -38,6 +38,8 @@ interface StartupVideoCardProps {
   autoPlay?: boolean;
   onInvest?: (pitchId: string) => void;
   fullScreen?: boolean;
+  isSubscribed?: boolean;
+  onSubscribe?: (startupId: string) => void;
 }
 
 const StartupVideoCard: React.FC<StartupVideoCardProps> = ({
@@ -46,6 +48,8 @@ const StartupVideoCard: React.FC<StartupVideoCardProps> = ({
   autoPlay = false,
   onInvest,
   fullScreen = false,
+  isSubscribed = false,
+  onSubscribe,
 }) => {
   const [isPlaying, setIsPlaying] = useState(autoPlay);
   const [isLiked, setIsLiked] = useState(false);
@@ -55,6 +59,7 @@ const StartupVideoCard: React.FC<StartupVideoCardProps> = ({
   const [commentsDialogOpen, setCommentsDialogOpen] = useState(false);
   const [investDialogOpen, setInvestDialogOpen] = useState(false);
   const [comments, setComments] = useState(pitch.comments);
+  const [isFavorite, setIsFavorite] = useState(false);
   const playerRef = useRef<ReactPlayer>(null);
   const navigate = useNavigate();
   const theme = useTheme();
@@ -86,6 +91,16 @@ const StartupVideoCard: React.FC<StartupVideoCardProps> = ({
 
   const handleLike = () => {
     setIsLiked(!isLiked);
+  };
+
+  const handleFavorite = () => {
+    setIsFavorite(!isFavorite);
+  };
+
+  const handleSubscribe = () => {
+    if (onSubscribe) {
+      onSubscribe(startup.id);
+    }
   };
 
   const handleInvest = () => {
@@ -350,6 +365,54 @@ const StartupVideoCard: React.FC<StartupVideoCardProps> = ({
                   alignItems: 'center',
                 }}
               >
+                {/* Subscribe */}
+                <Box sx={{ textAlign: 'center' }}>
+                  <IconButton
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSubscribe();
+                    }}
+                    sx={{
+                      backgroundColor: 'rgba(0,0,0,0.6)',
+                      color: isSubscribed ? '#4CAF50' : 'white',
+                      width: 56,
+                      height: 56,
+                      '&:hover': {
+                        backgroundColor: 'rgba(0,0,0,0.8)',
+                      },
+                    }}
+                  >
+                    <Subscriptions sx={{ fontSize: 28 }} />
+                  </IconButton>
+                  <Typography variant="body2" sx={{ color: 'white', mt: 1, fontWeight: 600 }}>
+                    {isSubscribed ? 'Подписка' : 'Подписаться'}
+                  </Typography>
+                </Box>
+
+                {/* Favorite */}
+                <Box sx={{ textAlign: 'center' }}>
+                  <IconButton
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleFavorite();
+                    }}
+                    sx={{
+                      backgroundColor: 'rgba(0,0,0,0.6)',
+                      color: isFavorite ? '#FFC107' : 'white',
+                      width: 56,
+                      height: 56,
+                      '&:hover': {
+                        backgroundColor: 'rgba(0,0,0,0.8)',
+                      },
+                    }}
+                  >
+                    {isFavorite ? <Favorite sx={{ fontSize: 28 }} /> : <FavoriteBorder sx={{ fontSize: 28 }} />}
+                  </IconButton>
+                  <Typography variant="body2" sx={{ color: 'white', mt: 1, fontWeight: 600 }}>
+                    {isFavorite ? 'В избранном' : 'В избранное'}
+                  </Typography>
+                </Box>
+
                 {/* Like */}
                 <Box sx={{ textAlign: 'center' }}>
                   <IconButton

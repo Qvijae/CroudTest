@@ -116,7 +116,7 @@ const Navigation: React.FC = () => {
                 letterSpacing: '0.5px'
               }}
             >
-              StartupInvest
+              MiaT
             </Typography>
 
             {/* Profile avatar */}
@@ -265,7 +265,7 @@ const Navigation: React.FC = () => {
               color: '#ffffff',
             }}
           >
-            StartupInvest
+            MiaT
           </Typography>
         </Box>
 
