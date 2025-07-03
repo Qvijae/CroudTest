@@ -312,7 +312,7 @@ const StartupDetailPage: React.FC = () => {
               </Typography>
               <Grid container spacing={2} sx={{ mt: 1 }}>
                 {['AI', 'Machine Learning', 'Blockchain', 'Cloud Computing'].map((tech) => (
-                  <Grid component="div" item key={tech}>
+                  <Grid item key={tech}>
                     <Chip label={tech} variant="outlined" />
                   </Grid>
                 ))}
@@ -360,7 +360,7 @@ const StartupDetailPage: React.FC = () => {
             </Typography>
             
             <Grid container spacing={3}>
-              <Grid component="div" item xs={12} md={6}>
+              <Grid item xs={12} md={6}>
                 <Card variant="outlined" sx={{ height: '100%' }}>
                   <CardContent>
                     <Typography variant="subtitle2" color="text.secondary" gutterBottom>
@@ -376,7 +376,7 @@ const StartupDetailPage: React.FC = () => {
                 </Card>
               </Grid>
               
-              <Grid component="div" item xs={12} md={6}>
+              <Grid item xs={12} md={6}>
                 <Card variant="outlined" sx={{ height: '100%' }}>
                   <CardContent>
                     <Typography variant="subtitle2" color="text.secondary" gutterBottom>
@@ -392,7 +392,7 @@ const StartupDetailPage: React.FC = () => {
                 </Card>
               </Grid>
               
-              <Grid component="div" item xs={12} md={6}>
+              <Grid item xs={12} md={6}>
                 <Card variant="outlined" sx={{ height: '100%' }}>
                   <CardContent>
                     <Typography variant="subtitle2" color="text.secondary" gutterBottom>
@@ -408,7 +408,7 @@ const StartupDetailPage: React.FC = () => {
                 </Card>
               </Grid>
               
-              <Grid component="div" item xs={12} md={6}>
+              <Grid item xs={12} md={6}>
                 <Card variant="outlined" sx={{ height: '100%' }}>
                   <CardContent>
                     <Typography variant="subtitle2" color="text.secondary" gutterBottom>
@@ -552,7 +552,7 @@ const StartupDetailPage: React.FC = () => {
             </Typography>
             
             <Grid container spacing={3} sx={{ mt: 2 }}>
-              <Grid component="div" item xs={12} sm={6} md={4}>
+              <Grid item xs={12} sm={6} md={4}>
                 <Card variant="outlined" sx={{ height: '100%' }}>
                   <CardContent>
                     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
@@ -574,7 +574,7 @@ const StartupDetailPage: React.FC = () => {
                 </Card>
               </Grid>
               
-              <Grid component="div" item xs={12} sm={6} md={4}>
+              <Grid item xs={12} sm={6} md={4}>
                 <Card variant="outlined" sx={{ height: '100%' }}>
                   <CardContent>
                     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
@@ -596,7 +596,7 @@ const StartupDetailPage: React.FC = () => {
                 </Card>
               </Grid>
               
-              <Grid component="div" item xs={12} sm={6} md={4}>
+              <Grid item xs={12} sm={6} md={4}>
                 <Card variant="outlined" sx={{ height: '100%' }}>
                   <CardContent>
                     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
@@ -623,7 +623,7 @@ const StartupDetailPage: React.FC = () => {
           {/* Инвестирование */}
           <TabPanel value={infoTab} index={4}>
             <Grid container spacing={4}>
-              <Grid component="div" item xs={12} md={6}>
+              <Grid item xs={12} md={6}>
                 <Typography variant="h6" fontWeight={600} gutterBottom>
                   Условия инвестирования
                 </Typography>
@@ -670,19 +670,19 @@ const StartupDetailPage: React.FC = () => {
                 </Typography>
                 
                 <List>
-                  <ListItem component="div" button divider>
+                  <ListItem divider>
                     <ListItemIcon>
                       <Assessment sx={{ color: '#4CAF50' }} />
                     </ListItemIcon>
                     <ListItemText primary="Инвестиционный меморандум" />
                   </ListItem>
-                  <ListItem component="div" button divider>
+                  <ListItem divider>
                     <ListItemIcon>
                       <Assessment sx={{ color: '#4CAF50' }} />
                     </ListItemIcon>
                     <ListItemText primary="Договор инвестирования" />
                   </ListItem>
-                  <ListItem component="div" button>
+                  <ListItem>
                     <ListItemIcon>
                       <Assessment sx={{ color: '#4CAF50' }} />
                     </ListItemIcon>
@@ -691,7 +691,7 @@ const StartupDetailPage: React.FC = () => {
                 </List>
               </Grid>
               
-              <Grid component="div" item xs={12} md={6}>
+              <Grid item xs={12} md={6}>
                 <Typography variant="h6" fontWeight={600} gutterBottom>
                   Оценка рисков
                 </Typography>
@@ -779,7 +779,7 @@ const StartupDetailPage: React.FC = () => {
           <Grid container spacing={3}>
             {startupVideos.length > 0 ? (
               startupVideos.map((video, index) => (
-                <Grid component="div" item xs={12} sm={6} md={4} key={video.id}>
+                <Grid item xs={12} sm={6} md={4} key={video.id}>
                   <Card 
                     sx={{ 
                       height: '100%', 
@@ -878,7 +878,7 @@ const StartupDetailPage: React.FC = () => {
                 </Grid>
               ))
             ) : (
-              <Grid component="div" item xs={12}>
+              <Grid item xs={12}>
                 <Box sx={{ textAlign: 'center', py: 4 }}>
                   <Typography variant="body1" color="text.secondary">
                     У этого стартапа пока нет видео
