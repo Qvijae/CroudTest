@@ -201,7 +201,7 @@ const FeedPage: React.FC = () => {
       <SwipeableViews
         axis="x"
         index={feedTab}
-        onChangeIndex={setFeedTab}
+        onChangeIndex={(index) => setFeedTab(index)}
         style={{ height: '100%', width: '100%', marginTop: 48 }} // Add margin for tabs
         containerStyle={{ height: '100%', width: '100%' }}
         slideStyle={{ height: '100%', width: '100%' }}

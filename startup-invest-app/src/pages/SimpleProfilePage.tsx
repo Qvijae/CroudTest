@@ -307,7 +307,7 @@ const ProfilePage: React.FC = () => {
               
               <Grid container spacing={3}>
                 {favoriteStartups.map((startup) => (
-                  <Grid item xs={12} sm={6} md={4} key={startup.id}>
+                  <Grid component="div" item xs={12} sm={6} md={4} key={startup.id}>
                     <Card 
                       sx={{ 
                         backgroundColor: '#222222', 

@@ -343,7 +343,7 @@ const ExplorePage: React.FC = () => {
         // Investors list
         <Grid container spacing={3}>
           {filteredInvestors.map((investor, index) => (
-            <Grid item xs={12} md={6} key={investor.id}>
+            <Grid component="div" item xs={12} md={6} key={investor.id}>
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
