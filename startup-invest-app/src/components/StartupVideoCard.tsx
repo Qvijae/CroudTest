@@ -23,6 +23,7 @@ import {
   Verified,
   VolumeOff,
   VolumeUp,
+  Subscriptions,
 } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import ReactPlayer from 'react-player';

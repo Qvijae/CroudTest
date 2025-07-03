@@ -38,7 +38,13 @@ import {
   Gavel,
   Favorite,
   FavoriteBorder,
+  CheckCircle,
+  Circle,
+  PlayArrow,
 } from '@mui/icons-material';
+import {
+  IconButton,
+} from '@mui/material';
 import { mockStartups, mockPitches } from '../data/mockData';
 
 interface TabPanelProps {

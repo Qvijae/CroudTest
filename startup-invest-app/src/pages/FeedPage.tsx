@@ -8,8 +8,8 @@ import {
   Fade,
   Tabs,
   Tab,
-  SwipeableViews,
 } from '@mui/material';
+import SwipeableViews from 'react-swipeable-views';
 import {
   KeyboardArrowUp,
   KeyboardArrowDown,

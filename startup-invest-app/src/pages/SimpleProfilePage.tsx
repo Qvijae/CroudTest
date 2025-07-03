@@ -25,6 +25,9 @@ import {
   Settings,
   Security,
 } from '@mui/icons-material';
+import {
+  IconButton,
+} from '@mui/material';
 import { motion } from 'framer-motion';
 import PortfolioAnalytics from '../components/PortfolioAnalyticsSimple';
 import InvestorSettings from '../components/InvestorSettings';
